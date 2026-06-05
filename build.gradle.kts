@@ -7,6 +7,16 @@ plugins {
 group = "com.kiishi.ite"
 version = providers.gradleProperty("pluginVersion").get()
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+kotlin {
+    jvmToolchain(25)
+}
+
 repositories {
     mavenCentral()
     intellijPlatform {
@@ -54,8 +64,7 @@ tasks {
     }
 
     withType<JavaCompile> {
-        sourceCompatibility = "21"
-        targetCompatibility = "21"
+        options.release.set(21)
     }
 
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

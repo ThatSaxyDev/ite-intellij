@@ -7,7 +7,6 @@ import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.terminal.frontend.toolwindow.TerminalToolWindowTab
 import com.intellij.terminal.frontend.toolwindow.TerminalToolWindowTabsManager
 import com.kiishi.ite.intellij.runtime.IteRuntime
-import org.jetbrains.plugins.terminal.startup.TerminalProcessType
 
 @Service(Service.Level.PROJECT)
 class IteTerminalService(private val project: Project) {
@@ -27,10 +26,8 @@ class IteTerminalService(private val project: Project) {
             .createTabBuilder()
             .workingDirectory(project.basePath)
             .shellCommand(command)
-            .processType(TerminalProcessType.NON_SHELL)
             .tabName("iTE")
             .requestFocus(true)
-            .closeOnProcessTermination(false)
             .createTab()
 
         currentTab = tab
@@ -43,6 +40,7 @@ class IteTerminalService(private val project: Project) {
         ToolWindowManager.getInstance(project).getToolWindow("Terminal")?.activate(null)
     }
 
+    @Suppress("DEPRECATION")
     private fun isDisposed(disposable: Disposable): Boolean {
         return com.intellij.openapi.util.Disposer.isDisposed(disposable)
     }
