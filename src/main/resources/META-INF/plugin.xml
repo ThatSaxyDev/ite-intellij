@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>com.kiishi.ite.intellij</id>
+    <id>com.kiishi.ite.agent</id>
     <name>iTE, the agent</name>
     <vendor email="support@ite.kiishi.space" url="https://ite.kiishi.space">iTE</vendor>
     <description><![CDATA[
