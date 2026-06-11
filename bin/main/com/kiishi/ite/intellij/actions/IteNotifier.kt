@@ -42,35 +42,6 @@ object IteNotifier {
         notification.notify(project)
     }
 
-    fun resumePrompt(project: Project, onResume: () -> Unit, onSkip: () -> Unit) {
-        val notification = group()
-            .createNotification(
-                "Resume your last iTE session?",
-                "iTE can pick up where you left off in this project.",
-                NotificationType.INFORMATION,
-            )
-            .addAction(object : NotificationAction("Resume Session") {
-                override fun actionPerformed(
-                    event: com.intellij.openapi.actionSystem.AnActionEvent,
-                    notification: com.intellij.notification.Notification,
-                ) {
-                    notification.expire()
-                    onResume()
-                }
-            })
-            .addAction(object : NotificationAction("Skip") {
-                override fun actionPerformed(
-                    event: com.intellij.openapi.actionSystem.AnActionEvent,
-                    notification: com.intellij.notification.Notification,
-                ) {
-                    notification.expire()
-                    onSkip()
-                }
-            })
-
-        notification.notify(project)
-    }
-
     private fun notify(project: Project?, title: String, content: String, type: NotificationType) {
         group().createNotification(title, content, type).notify(project)
     }

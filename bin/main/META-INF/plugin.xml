@@ -1,0 +1,53 @@
+<idea-plugin>
+    <id>com.kiishi.ite.agent</id>
+    <name>iTE, the agent</name>
+    <vendor email="support@ite.kiishi.space" url="https://ite.kiishi.space">iTE</vendor>
+    <description><![CDATA[
+        Run iTE, the Interactive Terminal Environment coding agent, inside a dedicated JetBrains IDE terminal.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.terminal</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable
+            id="ite.settings"
+            displayName="iTE"
+            instance="com.kiishi.ite.intellij.settings.IteSettingsConfigurable"
+            parentId="tools"/>
+        <notificationGroup id="iTE" displayType="BALLOON"/>
+        <postStartupActivity implementation="com.kiishi.ite.intellij.startup.IteStartupActivity"/>
+    </extensions>
+
+    <actions>
+        <group id="Ite.Actions" text="iTE" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action
+                id="Ite.OpenTerminal"
+                class="com.kiishi.ite.intellij.actions.OpenIteAction"
+                text="Open iTE"
+                description="Open iTE in the IDE terminal"/>
+            <action
+                id="Ite.OpenNewTerminal"
+                class="com.kiishi.ite.intellij.actions.OpenNewIteAction"
+                text="Open iTE: New Terminal"
+                description="Open a fresh iTE terminal"/>
+            <action
+                id="Ite.ResumeLastSession"
+                class="com.kiishi.ite.intellij.actions.ResumeLastIteSessionAction"
+                text="Open iTE: Last Session"
+                description="Open iTE and resume the last saved session"/>
+            <separator/>
+            <action
+                id="Ite.CheckInstallation"
+                class="com.kiishi.ite.intellij.actions.CheckIteInstallationAction"
+                text="Check iTE Installation"
+                description="Check whether the iTE runtime is installed"/>
+            <action
+                id="Ite.InstallRuntime"
+                class="com.kiishi.ite.intellij.actions.InstallIteRuntimeAction"
+                text="Install iTE Runtime"
+                description="Install the official iTE runtime"/>
+        </group>
+    </actions>
+</idea-plugin>

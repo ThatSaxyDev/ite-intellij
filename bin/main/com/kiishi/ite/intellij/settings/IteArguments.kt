@@ -4,9 +4,7 @@ object IteArguments {
     fun defaultArgs(): List<String> {
         val state = IteSettingsState.getInstance().state
         val args = state.args.filter { it.isNotBlank() }.toMutableList()
-        if (IteSettingsState.effectiveResumePromptMode() != IteSettingsState.PROMPT_MODE_NEVER &&
-            "--resume-last" !in args
-        ) {
+        if (state.resumeLastSession && "--resume-last" !in args) {
             args += "--resume-last"
         }
         return args
