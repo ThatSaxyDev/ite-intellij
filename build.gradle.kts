@@ -39,7 +39,8 @@ intellijPlatform {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
         }
         changeNotes = """
-            Initial IntelliJ Platform plugin for iTE.
+            - Add a "Resume last session" mode setting (Ask / Auto / Never), replacing the previous single toggle. Ask mode shows a single non-modal notification per project the first time, then remembers your choice.
+            - The resume decision is now stored per project instead of per IDE.
         """.trimIndent()
     }
 

@@ -56,7 +56,7 @@ class IteSettingsConfigurable : Configurable {
     }
 
     private fun selectedResumeMode(): String {
-        val value = resumePromptModeField.selectedItem as? String
+        val value = resumePromptModeField.selectedItem as? String ?: IteSettingsState.PROMPT_MODE_ASK
         return if (value in PROMPT_MODES) value else IteSettingsState.PROMPT_MODE_ASK
     }
 

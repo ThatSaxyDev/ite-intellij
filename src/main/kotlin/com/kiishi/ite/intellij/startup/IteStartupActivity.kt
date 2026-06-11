@@ -1,11 +1,13 @@
 package com.kiishi.ite.intellij.startup
 
+import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
-import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.startup.StartupActivity
+import com.kiishi.ite.intellij.actions.IteActionRunner
+import com.kiishi.ite.intellij.actions.IteLaunchMode
 import com.kiishi.ite.intellij.actions.IteNotifier
 import com.kiishi.ite.intellij.runtime.IteRuntime
 import com.kiishi.ite.intellij.runtime.IteRuntimeService
@@ -28,14 +30,13 @@ class IteStartupActivity : StartupActivity.DumbAware {
                     return
                 }
 
-                val properties = PropertiesComponent.getInstance()
-                if (IteSettingsState.getInstance().state.resumeLastSession && !properties.getBoolean(WELCOME_SHOWN_KEY, false)) {
-                    properties.setValue(WELCOME_SHOWN_KEY, true)
-                    IteNotifier.info(
-                        project,
-                        "iTE is ready",
-                        "Use Tools | iTE | Open iTE to resume the latest workspace session.",
-                    )
+                when (IteSettingsState.effectiveResumePromptMode()) {
+                    IteSettingsState.PROMPT_MODE_NEVER -> Unit
+                    IteSettingsState.PROMPT_MODE_AUTO -> {
+                        markResolved(project)
+                        IteActionRunner.openTerminal(project, IteLaunchMode.RESUME)
+                    }
+                    IteSettingsState.PROMPT_MODE_ASK -> offerResume(project)
                 }
             }
 
@@ -45,7 +46,42 @@ class IteStartupActivity : StartupActivity.DumbAware {
         })
     }
 
+    private fun offerResume(project: Project) {
+        if (hasDecided(project)) {
+            return
+        }
+
+        IteNotifier.resumePrompt(
+            project = project,
+            onResume = {
+                markDecision(project, RESUME_DECISION_RESUMED)
+                IteActionRunner.openTerminal(project, IteLaunchMode.RESUME)
+            },
+            onSkip = {
+                markDecision(project, RESUME_DECISION_SKIPPED)
+            },
+        )
+    }
+
+    private fun projectProperties(project: Project): PropertiesComponent {
+        return PropertiesComponent.getInstance(project)
+    }
+
+    private fun hasDecided(project: Project): Boolean {
+        return projectProperties(project).getBoolean(RESUME_DECISION_KEY, false)
+    }
+
+    private fun markDecision(project: Project, value: Boolean) {
+        projectProperties(project).setValue(RESUME_DECISION_KEY, value)
+    }
+
+    private fun markResolved(project: Project) {
+        markDecision(project, true)
+    }
+
     companion object {
-        private const val WELCOME_SHOWN_KEY = "ite.intellij.welcomeShown"
+        private const val RESUME_DECISION_KEY = "ite.intellij.resumeDecided"
+        private const val RESUME_DECISION_RESUMED = true
+        private const val RESUME_DECISION_SKIPPED = true
     }
 }
